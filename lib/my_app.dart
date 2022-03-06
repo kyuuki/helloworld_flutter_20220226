@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ui/medicine_new_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -11,16 +12,12 @@ class MyApp extends StatelessWidget {
       title: _title,  // What is this (https://stackoverflow.com/questions/50615006/flutter-where-is-the-title-of-material-app-used)
 
       theme: ThemeData(
-        primarySwatch: myMaterialColor,
+        //primarySwatch: myMaterialColor,
+        primarySwatch: Colors.blue,
       ),
       darkTheme: ThemeData.dark(),
 
-      home: Scaffold(
-        appBar: AppBar(title: const Text(_title)),
-        body: const Center(
-          child: Text("hello, world"),
-        ),
-      )
+      home: MedicineNewPage(),
     );
   }
 
