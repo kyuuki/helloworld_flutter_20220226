@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ui/medicine_new_page.dart';
+import 'ui/medicine_list_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -17,7 +17,8 @@ class MyApp extends StatelessWidget {
       ),
       darkTheme: ThemeData.dark(),
 
-      home: MedicineNewPage(),
+      //home: MedicineNewPage(),
+      home: MedicineListPage(),
     );
   }
 
