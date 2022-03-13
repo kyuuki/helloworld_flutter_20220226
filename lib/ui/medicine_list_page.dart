@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'medicine_detail_page.dart';
 import 'medicine_new_page.dart';
 
 class MedicineListPage extends StatelessWidget {
@@ -57,7 +58,10 @@ class _MedicineListState extends State<MedicineList> {
         title: Text(
           "お薬 ${i ~/ 2 + 1}",
         ),
-        onTap: () => {Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineNewPage()))},
+        onTap: () => {
+          // TODO: 値を渡す
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineDetailPage()))
+        },
         trailing: const Icon(Icons.delete_forever),
       );
     });
