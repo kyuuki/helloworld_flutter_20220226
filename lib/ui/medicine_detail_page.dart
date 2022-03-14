@@ -11,11 +11,11 @@ class MedicineDetailPage extends StatelessWidget {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Row(
-              children: [
+              children: const [
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.all(10.0),
                   child: Icon(Icons.medical_services),
                 ),
                 Text(
@@ -36,6 +36,7 @@ class MedicineDetailPage extends StatelessWidget {
       ),
     );
   }
+
 }
 
 class AlertList extends StatefulWidget {
@@ -46,31 +47,141 @@ class AlertList extends StatefulWidget {
 }
 
 class _AlertListState extends State<AlertList> {
+  List<String> alerms = ["10:00", "13:00", "17:00"];
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-        // TODO: 使いやすく
-        itemCount: 11,
-        itemBuilder: (context, i) {
-          if (i == 10) {
-            return ListTile(
-              leading: const Icon(Icons.add_circle),
-            );
-          }
-          if (i.isOdd) return const Divider();
-
+    return ListView.separated(
+      // TODO: 使いやすく
+      itemCount: alerms.length + 1,
+      itemBuilder: (context, i) {
+        // 最後の追加ボタン
+        if (i == alerms.length) {
           return ListTile(
-
-            leading: const Icon(Icons.alarm),
-            title: Text(
-              "アラーム ${i ~/ 2 + 1}",
-            ),
-            onTap: () => {
-              // TODO: 値を渡す
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineDetailPage()))
+            leading: const Icon(Icons.add_circle),
+            onTap: () async {
+              var alerm = await openDialog(context);  // TODO: オブジェクトでやり取り
+              setState(() {
+                alerms.add(alerm);
+              });
             },
-            trailing: const Icon(Icons.remove_circle),
           );
-        });
+        }
+
+        return ListTile(
+          leading: const Icon(Icons.alarm),
+          title: Text(
+            alerms[i],
+          ),
+          trailing: const Icon(Icons.remove_circle),
+        );
+      },
+      separatorBuilder: (context, i) {
+        return const Divider();
+      },
+    );
   }
+}
+
+// https://www.youtube.com/watch?v=D6icsXS8NeA
+Future openDialog(BuildContext context) {
+  var _hourController = TextEditingController();
+  var _minuteController = TextEditingController(text: "00");
+  bool flag = false;
+
+  return showDialog<String>(
+    context: context,
+    builder: (context) => AlertDialog(
+        title: const Text("アラーム追加"),
+        content: Column(
+          children: [
+            Row(
+              children: [
+                Flexible(
+                  child: TextField(
+                    decoration: const InputDecoration(labelText: "時"),
+                    keyboardType: TextInputType.number,
+                    maxLength: 2,
+                    controller: _hourController,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.all(12.0),
+                  child: Text(
+                    ":",
+                    style: TextStyle(fontSize: 18.0),
+                  ),
+                ),
+                Flexible(
+                  child: TextField(
+                    decoration: const InputDecoration(labelText: "分"),
+                    keyboardType: TextInputType.number,
+                    maxLength: 2,
+                    controller: _minuteController,
+                  ),
+                ),
+              ],
+            ),
+            Container(
+              height: 18.0,
+            ),
+            CheckboxListTile(
+              title: const Text('月'),
+              value: flag,
+              onChanged: (e) => {},
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('火'),
+              value: flag,
+              onChanged: (e) => {},
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('水'),
+              value: flag,
+              onChanged: (e) => {},
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('木'),
+              value: flag,
+              onChanged: (e) => {},
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('金'),
+              value: flag,
+              onChanged: (e) => {},
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('土'),
+              value: flag,
+              onChanged: (e) => {},
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+            CheckboxListTile(
+              title: const Text('日'),
+              value: flag,
+              onChanged: (e) => {},
+              controlAffinity: ListTileControlAffinity.leading,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            child: const Text("キャンセル"),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+          TextButton(
+            child: const Text("追加"),
+            onPressed: () {
+              Navigator.pop(context, "${_hourController.text}:${_minuteController.text}");
+            },
+          ),
+        ]),
+  );
 }
