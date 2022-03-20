@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // 薬詳細ページ
 class MedicineDetailPage extends StatelessWidget {
@@ -86,102 +87,114 @@ class _AlertListState extends State<AlertList> {
 // https://www.youtube.com/watch?v=D6icsXS8NeA
 Future openDialog(BuildContext context) {
   var _hourController = TextEditingController();
-  var _minuteController = TextEditingController(text: "00");
+  var _minuteController = TextEditingController();
   bool flag = false;
 
   return showDialog<String>(
     context: context,
-    builder: (context) => AlertDialog(
-        title: const Text("アラーム追加"),
-        content: Column(
-          children: [
-            Row(
+    builder: (context) => StatefulBuilder(
+      builder: (context, setState) => AlertDialog(
+          title: const Text("アラーム追加"),
+          content: SingleChildScrollView(
+            child: Column(
               children: [
-                Flexible(
-                  child: TextField(
-                    decoration: const InputDecoration(labelText: "時"),
-                    keyboardType: TextInputType.number,
-                    maxLength: 2,
-                    controller: _hourController,
-                  ),
+                Row(
+                  children: [
+                    Flexible(
+                      child: TextField(
+                        decoration: const InputDecoration(labelText: "時"),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r"^([01]?[0-9]|2[0-3])$"))
+                        ],
+                        controller: _hourController,
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.all(12.0),
+                      child: Text(
+                        ":",
+                        style: TextStyle(fontSize: 18.0),
+                      ),
+                    ),
+                    Flexible(
+                      child: TextField(
+                        decoration: const InputDecoration(labelText: "分"),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r"^[0-5]?[0-9]$"))
+                        ],
+                        controller: _minuteController,
+                      ),
+                    ),
+                  ],
                 ),
-                const Padding(
-                  padding: EdgeInsets.all(12.0),
-                  child: Text(
-                    ":",
-                    style: TextStyle(fontSize: 18.0),
-                  ),
+                Container(
+                  height: 18.0,
                 ),
-                Flexible(
-                  child: TextField(
-                    decoration: const InputDecoration(labelText: "分"),
-                    keyboardType: TextInputType.number,
-                    maxLength: 2,
-                    controller: _minuteController,
-                  ),
+                CheckboxListTile(
+                  title: const Text('月'),
+                  value: flag,
+                  onChanged: (bool? e) {
+                    setState(() {
+                      flag = e!;
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+                CheckboxListTile(
+                  title: const Text('火'),
+                  value: flag,
+                  onChanged: (e) => {},
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+                CheckboxListTile(
+                  title: const Text('水'),
+                  value: flag,
+                  onChanged: (e) => {},
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+                CheckboxListTile(
+                  title: const Text('木'),
+                  value: flag,
+                  onChanged: (e) => {},
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+                CheckboxListTile(
+                  title: const Text('金'),
+                  value: flag,
+                  onChanged: (e) => {},
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+                CheckboxListTile(
+                  title: const Text('土'),
+                  value: flag,
+                  onChanged: (e) => {},
+                  controlAffinity: ListTileControlAffinity.leading,
+                ),
+                CheckboxListTile(
+                  title: const Text('日'),
+                  value: flag,
+                  onChanged: (e) => {},
+                  controlAffinity: ListTileControlAffinity.leading,
                 ),
               ],
             ),
-            Container(
-              height: 18.0,
-            ),
-            CheckboxListTile(
-              title: const Text('月'),
-              value: flag,
-              onChanged: (e) => {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-            CheckboxListTile(
-              title: const Text('火'),
-              value: flag,
-              onChanged: (e) => {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-            CheckboxListTile(
-              title: const Text('水'),
-              value: flag,
-              onChanged: (e) => {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-            CheckboxListTile(
-              title: const Text('木'),
-              value: flag,
-              onChanged: (e) => {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-            CheckboxListTile(
-              title: const Text('金'),
-              value: flag,
-              onChanged: (e) => {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-            CheckboxListTile(
-              title: const Text('土'),
-              value: flag,
-              onChanged: (e) => {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-            CheckboxListTile(
-              title: const Text('日'),
-              value: flag,
-              onChanged: (e) => {},
-              controlAffinity: ListTileControlAffinity.leading,
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            child: const Text("キャンセル"),
-            onPressed: () {
-              Navigator.pop(context);
-            },
           ),
-          TextButton(
-            child: const Text("追加"),
-            onPressed: () {
-              Navigator.pop(context, "${_hourController.text}:${_minuteController.text}");
-            },
-          ),
-        ]),
+          actions: [
+            TextButton(
+              child: const Text("キャンセル"),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            TextButton(
+              child: const Text("追加"),
+              onPressed: () {
+                Navigator.pop(context, "${_hourController.text}:${_minuteController.text}");
+              },
+            ),
+          ]),
+    ),
   );
 }
