@@ -27,18 +27,24 @@ class MedicineNewPage extends StatelessWidget {
             const Spacer(),
             Container(
               decoration: BoxDecoration(color: Theme.of(context).selectedRowColor),
-              padding: EdgeInsets.all(16.0),
+              padding: EdgeInsets.only(top: 10.0, bottom: 50.0),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ElevatedButton(
-                    child: Text("キャンセルする"),
-                    onPressed: () {},
+                  Padding(
+                    padding: const EdgeInsets.only(left: 30.0),
+                    child: ElevatedButton(
+                      child: Text("キャンセルする"),
+                      onPressed: () {},
+                    ),
                   ),
                   const Spacer(),
-                  ElevatedButton(
-                    child: Text("保存する"),
-                    onPressed: () {},
+                  Padding(
+                    padding: const EdgeInsets.only(right: 30.0),
+                    child: ElevatedButton(
+                      child: Text("保存する"),
+                      onPressed: () {},
+                    ),
                   ),
                 ],
               ),

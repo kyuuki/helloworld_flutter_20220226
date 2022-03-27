@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sprintf/sprintf.dart';
+
+import '../model/alarm.dart';
 
 // 薬詳細ページ
 class MedicineDetailPage extends StatelessWidget {
@@ -48,22 +51,26 @@ class AlertList extends StatefulWidget {
 }
 
 class _AlertListState extends State<AlertList> {
-  List<String> alerms = ["10:00", "13:00", "17:00"];
+  List<Alarm> alarms = [
+    Alarm(10, 0, [ true, true, true, true, true, true, true ]),
+    Alarm(13, 0, [ true, false, false, false, true, false, false ]),
+    Alarm(17, 30, [ true, false, true, true, false, false, true ]),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
       // TODO: 使いやすく
-      itemCount: alerms.length + 1,
+      itemCount: alarms.length + 1,
       itemBuilder: (context, i) {
         // 最後の追加ボタン
-        if (i == alerms.length) {
+        if (i == alarms.length) {
           return ListTile(
             leading: const Icon(Icons.add_circle),
             onTap: () async {
-              var alerm = await openDialog(context);  // TODO: オブジェクトでやり取り
+              Alarm alarm = await openDialog(context);
               setState(() {
-                alerms.add(alerm);
+                alarms.add(alarm);
               });
             },
           );
@@ -72,8 +79,9 @@ class _AlertListState extends State<AlertList> {
         return ListTile(
           leading: const Icon(Icons.alarm),
           title: Text(
-            alerms[i],
+            sprintf("%02d:%02d", [ alarms[i].hour, alarms[i].minute ]),
           ),
+          subtitle: buildRowDays(alarms[i].days),
           trailing: const Icon(Icons.remove_circle),
         );
       },
@@ -82,15 +90,61 @@ class _AlertListState extends State<AlertList> {
       },
     );
   }
+
+  // 曜日のリスト作成
+  Wrap buildRowDays(List<bool> days) {
+    List<Widget> children = [];
+    if (days.every((d) => d)) {
+      children.add(buildChipDay("毎日"));
+    } else if (days.where((d) => d).length == 6) {
+      String label = "";
+      days.asMap().forEach((i, v) {
+        if (!v) {
+          label = label + (Alarm.dayTexts[i]);
+        }
+      });
+      children.add(buildChipDay("${label}以外"));
+    } else {
+      days.asMap().forEach((i, v) {
+        if (v) {
+          children.add(buildChipDay(Alarm.dayTexts[i]));
+        }
+      });
+    }
+
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
+      children: children,
+    );
+  }
+
+  Chip buildChipDay(String text) {
+    return Chip(
+            //avatar: Icon(Icons.alarm),
+            label: Text(
+              text,
+              style: TextStyle(fontSize: 12.0),
+            ),
+          );
+  }
 }
 
 // https://www.youtube.com/watch?v=D6icsXS8NeA
 Future openDialog(BuildContext context) {
   var _hourController = TextEditingController();
   var _minuteController = TextEditingController();
-  bool flag = false;
+  List<DaysModel> days = [
+    DaysModel("日"),
+    DaysModel("月"),
+    DaysModel("火"),
+    DaysModel("水"),
+    DaysModel("木"),
+    DaysModel("金"),
+    DaysModel("土"),
+  ];
 
-  return showDialog<String>(
+  // ここに戻り値を書くのか！！！
+  return showDialog<Alarm>(
     context: context,
     builder: (context) => StatefulBuilder(
       builder: (context, setState) => AlertDialog(
@@ -132,52 +186,8 @@ Future openDialog(BuildContext context) {
                 Container(
                   height: 18.0,
                 ),
-                CheckboxListTile(
-                  title: const Text('月'),
-                  value: flag,
-                  onChanged: (bool? e) {
-                    setState(() {
-                      flag = e!;
-                    });
-                  },
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  title: const Text('火'),
-                  value: flag,
-                  onChanged: (e) => {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  title: const Text('水'),
-                  value: flag,
-                  onChanged: (e) => {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  title: const Text('木'),
-                  value: flag,
-                  onChanged: (e) => {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  title: const Text('金'),
-                  value: flag,
-                  onChanged: (e) => {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  title: const Text('土'),
-                  value: flag,
-                  onChanged: (e) => {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
-                CheckboxListTile(
-                  title: const Text('日'),
-                  value: flag,
-                  onChanged: (e) => {},
-                  controlAffinity: ListTileControlAffinity.leading,
-                ),
+                // 日 〜 土 のチェックボックス
+                for (var d in days) checkboxListTile(d, setState),
               ],
             ),
           ),
@@ -191,10 +201,35 @@ Future openDialog(BuildContext context) {
             TextButton(
               child: const Text("追加"),
               onPressed: () {
-                Navigator.pop(context, "${_hourController.text}:${_minuteController.text}");
+                int hour = int.parse(_hourController.text);
+                int minute = int.parse(_minuteController.text);
+                var alarm = Alarm(hour, minute, days.map((d) => d.checked).toList());
+                Navigator.pop(context, alarm);
               },
             ),
           ]),
     ),
   );
+}
+
+// 曜日のチェックボックスのモデル
+class DaysModel {
+  final String name;
+  bool checked = false;
+
+  DaysModel(this.name);
+}
+
+// 毎週のチェックボックス
+CheckboxListTile checkboxListTile(DaysModel daysModel, StateSetter setState) {
+  return CheckboxListTile(
+                title: Text(daysModel.name),
+                value: daysModel.checked,
+                onChanged: (bool? e) {
+                  setState(() {
+                    daysModel.checked = e!;
+                  });
+                },
+                controlAffinity: ListTileControlAffinity.leading,
+              );
 }
