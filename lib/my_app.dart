@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
         //primarySwatch: myMaterialColor,
         primarySwatch: Colors.blue,
       ),
-      darkTheme: ThemeData.dark(),
+      //darkTheme: ThemeData.dark(),
 
       //home: MedicineNewPage(),
       home: MedicineListPage(),
@@ -37,5 +37,6 @@ class MyApp extends StatelessWidget {
       900: Color(0xFF4A148C),
     },
   );
-  static const int _myPrimaryValue = 0xFFE6E6FA;
+  //static const int _myPrimaryValue = 0xFFE6E6FA;
+  static const int _myPrimaryValue = 0xFFE1BEE7;
 }
