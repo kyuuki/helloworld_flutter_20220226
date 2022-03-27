@@ -3,10 +3,15 @@ import 'package:flutter/services.dart';
 import 'package:sprintf/sprintf.dart';
 
 import '../model/alarm.dart';
+import '../model/medicine.dart';
 
 // 薬詳細ページ
 class MedicineDetailPage extends StatelessWidget {
-  const MedicineDetailPage({Key? key}) : super(key: key);
+  //const MedicineDetailPage({Key? key}) : super(key: key);  // TODO: 後で調べる
+
+  Medicine medicine;
+
+  MedicineDetailPage(this.medicine);
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +22,15 @@ class MedicineDetailPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
-              children: const [
-                Padding(
+              children: [
+                const Padding(
                   padding: EdgeInsets.all(10.0),
                   child: Icon(Icons.medical_services),
                 ),
                 Text(
-                  "お薬 A",
+                  medicine.name,
                   textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 16.0),
+                  style: const TextStyle(fontSize: 16.0),
                 ),
               ],
             ),

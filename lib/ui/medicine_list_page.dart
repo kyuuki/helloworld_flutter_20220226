@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../model/medicine.dart';
 import 'medicine_detail_page.dart';
 import 'medicine_new_page.dart';
 
-class MedicineListPage extends StatelessWidget {
+class MedicineListPage extends StatefulWidget {
   const MedicineListPage({Key? key}) : super(key: key);
 
+  @override
+  State<MedicineListPage> createState() => _MedicineListPageState();
+}
+
+class _MedicineListPageState extends State<MedicineListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -14,41 +20,65 @@ class MedicineListPage extends StatelessWidget {
         Center(
           child: ElevatedButton(
             child: const Text("薬を登録する"),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineNewPage()));
+            onPressed: () async {
+              Medicine medicne = await Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineNewPage()));
+              // この値を MedicineList に渡したい。
+              // DB に入れちゃうのが楽なのか？
+              setState(() {
+                medicines.add(medicne);
+              });
             },
           ),
         ),
       ],
-      body: MedicineList(),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: MedicineList(),
+      ),
     );
   }
 }
 
+// TODO: グローバルにはしたくない
+// お薬リスト
+List<Medicine> medicines = [
+  Medicine("ビタミン剤", ""),
+  Medicine("目薬", ""),
+  Medicine("喉のくすり", ""),
+];
+
 class MedicineList extends StatefulWidget {
-  const MedicineList({Key? key}) : super(key: key);
+  //const MedicineList({Key? key}) : super(key: key);
 
   @override
   _MedicineListState createState() => _MedicineListState();
+
+  void add(Medicine medicine) {
+    medicines.add(medicine);
+  }
 }
 
 class _MedicineListState extends State<MedicineList> {
+
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(itemBuilder: (context, i) {
-      if (i.isEven) return const Divider();
-
-      return ListTile(
-        leading: const Icon(Icons.medical_services),
-        title: Text(
-          "お薬 ${i ~/ 2 + 1}",
-        ),
-        onTap: () => {
-          // TODO: 値を渡す
-          Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineDetailPage()))
-        },
-        trailing: const Icon(Icons.delete_forever),
-      );
-    });
+    return ListView.separated(
+      itemCount: medicines.length,
+      itemBuilder: (context, i) {
+        return ListTile(
+          leading: const Icon(Icons.medical_services),
+          title: Text(
+              medicines[i].name
+          ),
+          onTap: () => {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineDetailPage(medicines[i])))
+          },
+          trailing: const Icon(Icons.delete_forever),
+        );
+      },
+      separatorBuilder: (context, i) {
+        return const Divider();
+      },
+    );
   }
 }
