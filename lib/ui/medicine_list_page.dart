@@ -10,32 +10,17 @@ class MedicineListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("お薬一覧")),
-      body: Column(
-        children: [
-          const Expanded(
-            child: MedicineList(),
+      persistentFooterButtons: [
+        Center(
+          child: ElevatedButton(
+            child: const Text("薬を登録する"),
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineNewPage()));
+            },
           ),
-          Container(
-            decoration: BoxDecoration(color: Theme
-                .of(context)
-                .selectedRowColor),
-            padding: EdgeInsets.all(16.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Spacer(),
-                ElevatedButton(
-                  child: const Text("薬を登録する"),
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => MedicineNewPage()));
-                  },
-                ),
-                const Spacer(),
-              ],
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
+      body: MedicineList(),
     );
   }
 }

@@ -7,6 +7,23 @@ class MedicineNewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("お薬登録")),
+      persistentFooterButtons: [
+        Row(
+          children: [
+            const Spacer(),
+            ElevatedButton(
+              child: Text("キャンセルする"),
+              onPressed: () {},
+            ),
+            const Spacer(),
+            ElevatedButton(
+              child: Text("保存する"),
+              onPressed: () {},
+            ),
+            const Spacer(),
+          ],
+        ),
+      ],
       body: Center(
         child: Column(
           children: [
@@ -22,31 +39,6 @@ class MedicineNewPage extends StatelessWidget {
                   hintText: '薬の名前を入力してください',
                   labelText: 'お薬名',
                 ),
-              ),
-            ),
-            const Spacer(),
-            Container(
-              decoration: BoxDecoration(color: Theme.of(context).selectedRowColor),
-              padding: EdgeInsets.only(top: 10.0, bottom: 50.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30.0),
-                    child: ElevatedButton(
-                      child: Text("キャンセルする"),
-                      onPressed: () {},
-                    ),
-                  ),
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 30.0),
-                    child: ElevatedButton(
-                      child: Text("保存する"),
-                      onPressed: () {},
-                    ),
-                  ),
-                ],
               ),
             ),
           ],
